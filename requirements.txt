@@ -1,0 +1,6 @@
+streamlit
+openai
+pydeck
+requests
+scikit-learn
+pandas

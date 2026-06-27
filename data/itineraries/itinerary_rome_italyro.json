@@ -1,0 +1,64 @@
+{
+  "itinerary": "### Day 1: Historic Rome\nMorning: Visit the Colosseum, the iconic amphitheater.\nAfternoon: Walk through the Roman Forum.\n\n### Day 2: Vatican & Dining\nMorning: Explore the Vatican Museums.\nAfternoon: Enjoy lunch at Da Enzo Al 29.",
+  "trace": [
+    "Mocking geocoding for Rome",
+    "Mocking POI search for Rome (history, food)",
+    "Mocking Wikivoyage retrieval",
+    "Compiling mock itinerary"
+  ],
+  "tool_state": {
+    "discovered_pois": [
+      {
+        "poi_id": "node/1",
+        "name": "Colosseum",
+        "category": "history",
+        "subtype": "attraction",
+        "lat": 41.8902,
+        "lon": 12.4922,
+        "url": "https://www.openstreetmap.org/node/1"
+      },
+      {
+        "poi_id": "node/2",
+        "name": "Roman Forum",
+        "category": "history",
+        "subtype": "ruins",
+        "lat": 41.8925,
+        "lon": 12.4853,
+        "url": "https://www.openstreetmap.org/node/2"
+      },
+      {
+        "poi_id": "node/3",
+        "name": "Vatican Museums",
+        "category": "art",
+        "subtype": "museum",
+        "lat": 41.9072,
+        "lon": 12.4539,
+        "url": "https://www.openstreetmap.org/node/3"
+      },
+      {
+        "poi_id": "node/4",
+        "name": "Da Enzo Al 29",
+        "category": "food",
+        "subtype": "restaurant",
+        "lat": 41.8881,
+        "lon": 12.4786,
+        "url": "https://www.openstreetmap.org/node/4"
+      }
+    ],
+    "retrieved_chunks": [
+      {
+        "chunk_id": "wikivoyage_rome_1",
+        "source": "Wikivoyage: Rome",
+        "text": "Rome is the capital city of Italy...",
+        "score": 0.8
+      }
+    ]
+  },
+  "verified_pois": [
+    "Colosseum",
+    "Roman Forum",
+    "Vatican Museums",
+    "Da Enzo Al 29"
+  ],
+  "unused_pois": []
+}
