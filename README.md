@@ -49,6 +49,28 @@ graph TD
     FeedbackDB -->|Read Boosts| FeedbackAgg
 ```
 
+### Architecture Overview
+
+Wander AI is organized as a Streamlit presentation layer, an OpenAI tool-calling orchestration layer, and two external travel-data services:
+
+| Layer | Responsibility | Main implementation |
+|---|---|---|
+| Presentation | Collects trip preferences, displays itineraries and maps, and handles refinement and POI feedback. | `app.py` |
+| Agent orchestration | Builds prompts, calls the language model, executes tools, tracks state, and validates referenced POIs. | `services/agent.py` |
+| POI service | Geocodes destinations, queries nearby points of interest, applies feedback boosts, and returns normalized POI records. | `services/osm.py` |
+| Knowledge service | Fetches Wikivoyage articles, cleans and chunks text, and retrieves relevant context with TF-IDF similarity. | `services/rag.py` |
+| Persistence | Stores generated itineraries as JSON and POI feedback as JSONL. | `data/itineraries/`, `data/feedback/` |
+
+The runtime flow is:
+
+1. The user enters a destination, duration, pace, interests, constraints, and optional notes in Streamlit.
+2. `run_itinerary_agent` sends the request to OpenAI and allows the model to call `search_pois` and `retrieve_guides`.
+3. The tools query OpenStreetMap and Wikivoyage, then return verified places and relevant travel-guide context to the agent.
+4. The agent compiles a day-by-day itinerary, and Python validates that referenced POIs came from the search results.
+5. Streamlit renders the itinerary and map, saves the result locally, and can refine either the full itinerary or one day.
+
+Weather is not currently part of this architecture: there is no weather API, forecast input, or weather-based scheduling logic. A future weather integration would add a forecast service between the presentation layer and agent orchestration, then pass forecast data into the agent as structured context.
+
 ---
 
 ## Core Features
