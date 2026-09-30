@@ -123,12 +123,29 @@ pip install -r requirements.txt
 
 *Required packages include:* `streamlit`, `openai`, `pydeck`, `requests`, `scikit-learn`, `pandas`, `jinja2`.
 
-### 2. Run the Server
-Launch the Streamlit app locally:
+```bash
+pip install -r requirements.txt
+```
+
+*Required packages include:* `streamlit`, `openai`, `pydeck`, `requests`, `scikit-learn`, `pandas`, `fastapi`, `uvicorn`.
+
+### 2. Run the Web Application
+You can run Wander AI using either the new **Luxury Web Frontend** or the classic **Streamlit UI**:
+
+#### Option A: Luxury Web Frontend & API (Recommended)
+Launch the modern full-stack web application:
+```bash
+python server.py
+```
+The server will start on `http://localhost:8000`. You can also open `frontend/index.html` directly in your browser.
+
+#### Option B: Classic Streamlit UI
+Launch the Streamlit app:
 ```bash
 streamlit run app.py
 ```
 The server will start and bind to `http://localhost:8501`.
+
 
 ### 3. Usage & Diagnostics
 - **Diagnostic key**: If you don't have an active OpenAI API key with credit, enter the word **`mock`** into the OpenAI API Key sidebar field to unlock all planner features. Click **Generate Travel Itinerary** to populate the interface with deterministic mock datasets for testing all refinement, PyDeck mapping, and feedback voting mechanics.

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_standard" name="shell-type"/>
+  <title>Wander AI — Curating: Rome Getaway (Activity Selection & Concierge)</title>
+  <meta name="description" content="Select your preferred activities and converse with the Wander AI travel concierge to build your tailored Rome itinerary."/>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .modal-hidden { opacity: 0; pointer-events: none; }
+    .modal-container { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out; }
+    .modal-hidden .modal-container { transform: scale(0.96) translateY(8px); }
+  </style>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed": "#ffd9de",
+            "on-secondary-fixed-variant": "#871b3c",
+            "primary": "#58001b",
+            "error": "#ba1a1a",
+            "surface-variant": "#e9e1dd",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#cec4c6",
+            "surface-tint": "#a5374c",
+            "on-primary-container": "#ff8496",
+            "tertiary-fixed": "#eae0e2",
+            "error-container": "#ffdad6",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#400011",
+            "outline": "#897173",
+            "surface-container": "#f4ece8",
+            "surface-container-highest": "#e9e1dd",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#1e1b19",
+            "on-secondary-fixed": "#3f0015",
+            "secondary-fixed-dim": "#ffb2bf",
+            "tertiary": "#2d2729",
+            "secondary-container": "#fe7796",
+            "outline-variant": "#ddc0c2",
+            "on-error-container": "#93000a",
+            "inverse-on-surface": "#f7efeb",
+            "inverse-primary": "#ffb2ba",
+            "on-tertiary-fixed": "#1f1a1c",
+            "surface-dim": "#e0d8d5",
+            "background": "#fff8f5",
+            "on-error": "#ffffff",
+            "secondary": "#a73453",
+            "on-surface-variant": "#564143",
+            "surface-container-low": "#faf2ee",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#851e36",
+            "on-tertiary-fixed-variant": "#4b4547",
+            "inverse-surface": "#33302d",
+            "on-background": "#1e1b19",
+            "primary-container": "#7a152e",
+            "primary-fixed-dim": "#ffb2ba",
+            "surface-bright": "#fff8f5",
+            "on-tertiary-container": "#b1a8aa",
+            "tertiary-container": "#433d3f",
+            "on-secondary-container": "#74092f",
+            "primary-fixed": "#ffd9dc",
+            "surface-container-high": "#eee7e3",
+            "surface": "#fff8f5"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "margin-lg": "4rem",
+            "space-sm": "0.5rem",
+            "gutter-sm": "1rem",
+            "gutter-lg": "2rem",
+            "margin": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "margin-sm": "1rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem"
+          },
+          fontFamily: {
+            "body-xl": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Playfair Display"],
+            "display-lg": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "headline-sm": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"]
+          },
+          fontSize: {
+            "body-xl": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-surface-variant">
+    <div class="h-20 max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg flex items-center justify-between gap-space-md">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-space-md shrink-0 hover:opacity-90 transition-opacity">
+        <img alt="Wander AI Burgundy Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WBVbq3V5J3GbM8ZsW5XSy9hRVOlF7VFWSGNMlqDDqxKFokyrnuXC8apLGXw7ybPgvwKJbJxSUqAELSxIURCpSO1xAcnF_5YoqN7DGMT_gFKSlcWmcuJV-p2QUm4NqbSWyPnT67S-X44_w1AWft_1PhsNH4yPzWdMqj3uoxFkgblAD9EBQegrtZOpZARQsObFXAv8ZHIAtmsajt_e3ZYyIXgwYCvcFBamL3DfrDNjkrjX9HSHKVQXJx5w"/>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">Wander AI</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase mt-space-xs">Smart Travel Curator</span>
+        </div>
+      </a>
+
+      <!-- Primary Nav -->
+      <nav class="hidden lg:flex items-center gap-space-xl" data-active-classes="text-primary font-label-lg font-bold border-b-2 border-primary">
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/">Discover</a>
+        <a aria-current="page" class="transition-colors py-space-xs text-primary font-label-lg font-bold border-b-2 border-primary" href="/plan">Plan Trip</a>
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/#destinations">Destinations</a>
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/itinerary">My Trips</a>
+      </nav>
+
+      <!-- Action Nav -->
+      <div class="flex items-center gap-space-md shrink-0">
+        <button aria-label="Search" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button" onclick="focusChat()">
+          <span class="material-symbols-outlined text-[22px]">search</span>
+        </button>
+
+        <div id="auth-header-slot">
+          <button class="hidden sm:inline-flex font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors px-space-sm py-space-xs" type="button" onclick="openAuthModal('login')">
+            Log In
+          </button>
+        </div>
+
+        <a class="inline-flex items-center justify-center bg-primary-container text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded-lg hover:bg-primary transition-all shadow-[0_2px_8px_rgba(88,0,27,0.12)] hover:-translate-y-0.5" href="/itinerary">
+          View Map
+        </a>
+
+        <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 cursor-pointer text-white hover:opacity-90" onclick="openAuthModal('login')">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View -->
+  <main class="w-full pt-20 bg-surface min-h-[calc(100vh-160px)]">
+    <div class="flex flex-col w-full">
+
+      <!-- Interactive Chat & Activity Workspace Container -->
+      <div class="max-w-[1440px] mx-auto w-full px-margin-sm md:px-margin lg:px-margin-lg py-space-lg flex flex-col gap-space-lg">
+
+        <!-- Top Context & Trip Summary Banner -->
+        <div class="w-full bg-surface-container-lowest shadow-sm rounded-xl p-space-md md:p-space-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+          <div class="flex items-center gap-space-md">
+            <div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">explore</span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-space-xs">
+                <span class="font-headline-sm text-headline-sm text-on-surface">Curating: Rome Getaway</span>
+                <span class="bg-secondary-fixed/50 text-on-secondary-fixed-variant px-space-xs py-0.5 rounded-full font-label-sm text-label-sm uppercase tracking-wider">AI Synced</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-space-sm mt-space-xs">
+                <span class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-primary">location_on</span> Rome, Italy
+                </span>
+                <span class="text-outline-variant">•</span>
+                <span class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-primary">calendar_month</span> 4 Days
+                </span>
+                <span class="text-outline-variant">•</span>
+                <span class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-primary">spa</span> Relaxed Pace
+                </span>
+                <span class="text-outline-variant">•</span>
+                <span class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-primary">favorite</span> Couple's Holiday
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-space-sm self-end md:self-auto">
+            <a href="/itinerary" class="px-space-md py-space-xs rounded-lg bg-surface-container text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors flex items-center gap-space-xs">
+              <span class="material-symbols-outlined text-[18px]">tune</span>
+              Trip Preferences
+            </a>
+            <button onclick="shareTrip()" class="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant font-label-md flex items-center justify-center hover:bg-surface-variant transition-colors" type="button">
+              <span class="material-symbols-outlined text-[18px]">share</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Dual Panel: Left Conversation Flow & Right Activity Canvas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+
+          <!-- LEFT COLUMN: Conversation Thread (5 Cols on Desktop) -->
+          <section class="lg:col-span-5 flex flex-col gap-space-md bg-surface-container-low rounded-xl p-space-md md:p-space-lg">
+            <div class="flex items-center justify-between pb-space-xs">
+              <div class="flex items-center gap-space-xs text-primary font-label-lg text-label-lg">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                <span>Travel Curator Thread</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">Active Session</span>
+            </div>
+
+            <!-- Chat Stream Scrollable Area -->
+            <div id="chat-stream-box" class="flex flex-col gap-space-md max-h-[720px] overflow-y-auto pr-1">
+              <!-- User Prompt Bubble -->
+              <div class="flex flex-col items-end gap-space-xs ml-space-lg">
+                <div class="flex items-center gap-space-xs">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Elena &amp; Marco</span>
+                  <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center justify-center">E</div>
+                </div>
+                <div class="bg-primary text-on-primary p-space-md rounded-2xl rounded-tr-none shadow-sm font-body-md text-body-md leading-relaxed">
+                  I want to spend 4 days in Rome with my partner. We love historic landmarks, authentic trattorias, and charming neighborhoods, but want a relaxed pace.
+                </div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">10:24 AM</span>
+              </div>
+
+              <!-- Wander AI Assistant Response Bubble -->
+              <div class="flex flex-col items-start gap-space-xs mr-space-lg">
+                <div class="flex items-center gap-space-xs">
+                  <div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-xs">
+                    <span class="material-symbols-outlined text-[14px]">compass_calibration</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-primary font-semibold">Wander AI</span>
+                  <span class="bg-primary-fixed text-on-primary-fixed-variant px-1.5 py-0.2 rounded font-label-sm text-label-sm">Curator</span>
+                </div>
+                <div class="bg-surface-container-lowest text-on-surface p-space-md rounded-2xl rounded-tl-none shadow-sm flex flex-col gap-space-sm font-body-md text-body-md leading-relaxed">
+                  <p>
+                    What a wonderful trip! Rome has endless beauty. Based on your style, I’ve pulled together the top curated experiences across history, food, and culture.
+                  </p>
+                  <p class="text-on-surface-variant">
+                    Select the activities you’d love to include on the right, and I’ll craft your custom day-by-day itinerary with an optimized route!
+                  </p>
+                  <!-- Inline Quick Destination Highlights Chips -->
+                  <div class="pt-space-xs flex flex-wrap gap-space-xs">
+                    <span class="px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[14px]">local_cafe</span> Coffee &amp; Aperitivo
+                    </span>
+                    <span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[14px]">directions_walk</span> Max 6km daily
+                    </span>
+                    <span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[14px]">wb_twilight</span> Golden Hour Focus
+                    </span>
+                  </div>
+                </div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">10:25 AM</span>
+              </div>
+
+              <!-- Micro Suggestion Prompt Card -->
+              <div class="p-space-md bg-surface-container rounded-xl flex items-center justify-between gap-space-sm">
+                <div class="flex items-center gap-space-sm">
+                  <span class="material-symbols-outlined text-secondary text-[22px]">restaurant</span>
+                  <span class="font-body-sm text-body-sm text-on-surface">Would you like dinner table reservations included?</span>
+                </div>
+                <button onclick="handleDinnerOption(this)" class="px-space-sm py-1 rounded bg-surface-container-lowest text-primary font-label-sm text-label-sm hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap" type="button">
+                  Yes, please
+                </button>
+              </div>
+
+              <!-- Daily Schedule Preview Outline -->
+              <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-xs flex flex-col gap-space-sm">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-md text-label-md text-primary uppercase tracking-wider font-bold">Day-by-Day Balance</span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant">4 Days Target</span>
+                </div>
+                <div class="space-y-space-xs">
+                  <div class="flex items-center justify-between text-body-sm">
+                    <span class="font-label-sm text-label-sm text-on-surface">Day 1: Historic Center &amp; Trastevere</span>
+                    <span id="day1-count" class="text-secondary font-semibold">2 Selected</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div id="day1-bar" class="bg-primary h-full rounded-full" style="width: 75%;"></div>
+                  </div>
+                </div>
+                <div class="space-y-space-xs">
+                  <div class="flex items-center justify-between text-body-sm">
+                    <span class="font-label-sm text-label-sm text-on-surface">Day 2: Art, Villas &amp; Monti</span>
+                    <span id="day2-count" class="text-secondary font-semibold">2 Selected</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div id="day2-bar" class="bg-primary h-full rounded-full" style="width: 60%;"></div>
+                  </div>
+                </div>
+                <div class="space-y-space-xs">
+                  <div class="flex items-center justify-between text-body-sm">
+                    <span class="font-label-sm text-label-sm text-on-surface">Day 3: Piazza Navona &amp; Free Time</span>
+                    <span id="day3-count" class="text-secondary font-semibold">1 Selected</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div id="day3-bar" class="bg-primary h-full rounded-full" style="width: 35%;"></div>
+                  </div>
+                </div>
+                <div class="space-y-space-xs">
+                  <div class="flex items-center justify-between text-body-sm">
+                    <span class="font-label-sm text-label-sm text-on-surface">Day 4: Open for Leisure</span>
+                    <span id="day4-count" class="text-on-surface-variant">0 Selected</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div id="day4-bar" class="bg-secondary-fixed h-full rounded-full" style="width: 10%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT COLUMN: Interactive Activities Selection Section (7 Cols on Desktop) -->
+          <section class="lg:col-span-7 flex flex-col gap-space-md">
+            <!-- Header & Category Filter Tabs -->
+            <div class="flex flex-col gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-xs">
+              <div class="flex items-center justify-between flex-wrap gap-space-sm">
+                <div>
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Curated Experiences for Rome</h2>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Tap to include or remove items. Your daily walking route recalculates automatically.</p>
+                </div>
+                <div class="flex items-center gap-space-xs">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Sort by:</span>
+                  <button class="font-label-sm text-label-sm text-primary flex items-center gap-0.5 bg-surface-container px-2 py-1 rounded" type="button">
+                    Recommended <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Category Pill Tabs -->
+              <div class="flex items-center gap-space-xs overflow-x-auto pb-1 pt-space-xs scrollbar-none" id="categoryTabs">
+                <button data-cat="all" class="category-btn active-tab px-space-md py-space-xs rounded-full bg-primary-container text-on-primary font-label-md text-label-md shrink-0 shadow-xs transition-colors" type="button">
+                  All Activities (12)
+                </button>
+                <button data-cat="landmarks" class="category-btn px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md shrink-0 transition-colors" type="button">
+                  Must-See Landmarks
+                </button>
+                <button data-cat="food" class="category-btn px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md shrink-0 transition-colors" type="button">
+                  Food &amp; Wine
+                </button>
+                <button data-cat="gems" class="category-btn px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md shrink-0 transition-colors" type="button">
+                  Neighborhoods &amp; Hidden Gems
+                </button>
+                <button data-cat="art" class="category-btn px-space-md py-space-xs rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md shrink-0 transition-colors" type="button">
+                  Art &amp; Culture
+                </button>
+              </div>
+            </div>
+
+            <!-- Activity Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md" id="activityGrid">
+
+              <!-- Card 1: Colosseum (Selected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="1" data-duration="3.5" data-selected="true" data-cat="landmarks">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Roman Colosseum at golden hour" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACPmCRicmpnPnl7RTssBXMlvm-g0FvQKA84GIRaIDhLQEaCW636ze04e_SUnVdm8tnr2RH4-Q0TML4u_8s9vhLJL-FfAm90fXWo1N5n6gx0rWdmx6v29RchhSuWOOwEvTlJ5ZU47weDBsinxs346Gg29AUq_89zO91sd8m3e-4eOYKdbKQAR4VTmQoBamT5dNaxMgOw0KX2xddk40-eqlbaTOKm5oIAoY5lvUmi8ebw4kNFXjaC5pm"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <!-- Prominent Custom Checkbox -->
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px]">check</span>
+                    </div>
+                  </div>
+                  <!-- Category Badge -->
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-primary px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Historic Landmark
+                    </span>
+                  </div>
+                  <!-- Cost Indicator -->
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">€35</span>
+                    <span class="font-body-sm text-body-sm opacity-90">/ person</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 4.9 (1.4k)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Colosseum &amp; Roman Forum Guided Walk</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Skip-the-line entrance with archaeologist guide through the arena floor, Palatine Hill, and ancient temples.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>3.5 hrs</span>
+                    </div>
+                    <div class="bg-secondary-fixed/50 text-on-secondary-fixed-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Included: Day 1 Morning
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Trastevere Food Tour (Selected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="2" data-duration="3" data-selected="true" data-cat="food">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Trastevere Rome street with trattoria tables" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjcR5axrR6GCDwtyzf4UuMP2ZHqiF0hfRz0tidqYGqu63W_iALyi4bVcxF8U6sEVTiMi-eLYSTe9MNZoZr_yfC6s4PJIL0RqlJIxkei52mtanm0QsuXmxKgteX2cXqcMSGWKc0jU4O5xZE9r0nhoKSOXLbrVpeB7Vfqjuzf9cigNdXiyQPJPh6izctx0mDprIeL1nepI1UDz0PokdX2YOwOl5xn6NVOh10ib_c0jaBNzLmZ53bliww"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px]">check</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-primary px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Culinary Experience
+                    </span>
+                  </div>
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">€65</span>
+                    <span class="font-body-sm text-body-sm opacity-90">/ person</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 5.0 (890)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Trastevere Sunset Food &amp; Natural Wine Tour</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Stroll cobblestone alleys sampling suppli, artisanal cured meats, fresh pasta, and biological Lazio wines.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>3.0 hrs</span>
+                    </div>
+                    <div class="bg-secondary-fixed/50 text-on-secondary-fixed-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Included: Day 1 Evening
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Pantheon & Espresso Crawl (Selected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="3" data-duration="2" data-selected="true" data-cat="gems">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Pantheon and piazza cafe in Rome" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdUNE5TJaqsY9PPV_DCZhUzQNvs4cNkO_dHXx7eJrO3YUmWtQjiFO853M_aFSVOAL-a_7h_H9Ou3eK2nkL9Phq2PNgCAGkhoXl1kxk73OHcDl7mTMu6p43HNO12XFtgvEylSsET7pC6ahcWpxwG2-OqU2zwDydB0_HRYZrEln93ZlCIbWmwqweRIWwu_w-EQo646_lTawdIlpoywPg3C1naZ1V4gq91WyQSCAk1e8rj7hYhv_pKH6e"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px]">check</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-primary px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Cultural &amp; Leisure
+                    </span>
+                  </div>
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">Free</span>
+                    <span class="font-body-sm text-body-sm opacity-90">Self-guided</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 4.8 (2.1k)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Pantheon &amp; Piazza Navona Espresso Crawl</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Curated walking route linking Sant'Eustachio Il Caffe, Bernini's Fountain of the Four Rivers, and quiet courtyards.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>2.0 hrs</span>
+                    </div>
+                    <div class="bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Day 3 Morning
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4: Borghese Gallery (Selected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="4" data-duration="2.5" data-selected="true" data-cat="art">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Galleria Borghese marble sculptures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnMWZxtDmSH7-4WorIlGuq6ybX3raYDv_E_mk3jY0gKS-x9lMbVjFnjxb9itxmVAeX6lfMAIMrxnt5ujehWwAotHM_12Ba6uHaZrwX3Shhzu0HQP58aVDe7vUnX91x8U-AoSgoV698xA9X7DjPnOwuBOtRddhFTSsiP4FBB4hq9Xw2AfVsFW1W8x3T6Cf5lg9A33hhwYda2WvHYE9rmulBLAwhKTVhL9Bq8Y_ibuyx8-j7x5FthK87"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px]">check</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-primary px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Art &amp; Scenic
+                    </span>
+                  </div>
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">€22</span>
+                    <span class="font-body-sm text-body-sm opacity-90">/ person</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 4.9 (950)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Borghese Gallery &amp; Villa Gardens Stroll</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Timed masterworks reservation followed by umbrella-pine shaded pathways overlooking the Piazza del Popolo.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>2.5 hrs</span>
+                    </div>
+                    <div class="bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Day 2 Afternoon
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 5: Cacio e Pepe Cooking Class (Selected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="5" data-duration="2" data-selected="true" data-cat="food">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Making handmade pasta in Monti Rome" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD5Dy60_9ZS0YcdDVh6In--r0xUZUm1mfagTcl7Wjq8iMmLD4PPq6JHCy7zts5Uo7gW4KuSsKaXvJGTHxBlMM54gO8xBNM_KgKRdWo-vHW-1Q9ZBzRRqziE2CyqG_MG36DEzwLP_d5MGRLwJKRy8tO90nrJSQF_f1C4nYDzvZfnxSUQrU8oGKEIEBRkuxZhYV0y-dUhaHRyNWFyWi-3SLfGPpB62FnL4YdernViOypzNF_etdFkHds"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px]">check</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-primary px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Workshop
+                    </span>
+                  </div>
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">€55</span>
+                    <span class="font-body-sm text-body-sm opacity-90">/ person</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 4.9 (420)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Handmade Cacio e Pepe Cooking Class in Monti</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Master rolling fresh tonnarelli pasta in a boutique loft kitchen with a local Roman chef, paired with crisp Frascati wine.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>2.0 hrs</span>
+                    </div>
+                    <div class="bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Day 2 Evening
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 6: Appian Way Sunset Bike Tour (Unselected) -->
+              <div class="activity-card group bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer relative" data-activity-id="6" data-duration="3" data-selected="false" data-cat="landmarks">
+                <div class="relative w-full h-44 overflow-hidden">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" alt="Appian Way in Rome at sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZUttET2bxtK4iRuaZ9eRwuI_EVjktSaNMujXUR_TbcF0ub_3cS2eV3cWtX-F30LgyZet4cZCwYorUe2x0pKb2jwFzYVK_Eur0YUjy8v1wHZMPyxM2fUFaqBOVIogf7wLL8r8pfhJiOsr9F7sSpsu_yjC95VUJwjGURaWiRg8jC0L1GJvR3ZItS4tzcczbpfLh4SV1pm2XefDJgp9yssKUjbefI41c4CoFHWVeY96ppqRN5FIcB8AZ"/>
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 via-transparent to-black/20"></div>
+                  <div class="absolute top-3 right-3 z-10">
+                    <div class="activity-checkbox w-7 h-7 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center shadow-md transition-all">
+                      <span class="material-symbols-outlined text-[20px] opacity-0 group-hover:opacity-40">check</span>
+                    </div>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface-variant px-space-sm py-1 rounded-full font-label-sm text-label-sm font-semibold tracking-wide">
+                      Active
+                    </span>
+                  </div>
+                  <div class="absolute bottom-3 left-3 text-on-primary">
+                    <span class="font-headline-sm text-headline-sm font-bold">€40</span>
+                    <span class="font-body-sm text-body-sm opacity-90">/ person</span>
+                  </div>
+                  <div class="absolute bottom-3 right-3 text-on-primary font-label-sm text-label-sm bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                    ⭐ 4.8 (310)
+                  </div>
+                </div>
+                <div class="p-space-md flex flex-col justify-between flex-grow gap-space-sm">
+                  <div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Appian Way Sunset Bike Tour</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">Ride vintage-style e-bikes along the 2,300-year-old Roman military road past aqueducts, catacombs, and rolling hills.</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-space-xs mt-auto">
+                    <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                      <span>3.0 hrs</span>
+                    </div>
+                    <div class="bg-surface-container-high text-on-surface-variant px-space-xs py-0.5 rounded font-label-sm text-label-sm">
+                      Available Day 4
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Sticky Activity Selection Summary Bar -->
+            <div class="sticky bottom-4 z-30 w-full bg-surface-container-lowest/95 backdrop-blur-md rounded-xl p-space-md shadow-xl flex flex-col sm:flex-row items-center justify-between gap-space-md border border-surface-variant">
+              <div class="flex items-center gap-space-md w-full sm:w-auto">
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">checklist_rtl</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-label-lg text-label-lg text-on-surface font-bold" id="selectedCountText">5 activities selected</span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+                    <span id="pacingText">Estimated time balanced (~4.2 hrs/day • Relaxed)</span>
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+                <a href="/itinerary" class="w-full sm:w-auto px-space-lg py-space-sm rounded-lg bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center gap-space-xs text-center" id="generateItineraryBtn">
+                  <span>Generate Itinerary &amp; View Map</span>
+                  <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+
+          </section>
+        </div>
+
+        <!-- Bottom Floating Conversational AI Input Bar -->
+        <div class="w-full bg-surface-container-lowest shadow-md rounded-2xl p-space-sm md:p-space-md flex items-center gap-space-sm mt-space-xs border border-surface-variant">
+          <!-- Attachment / Quick context button -->
+          <button aria-label="Attach notes" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors shrink-0" type="button">
+            <span class="material-symbols-outlined text-[22px]">attach_file</span>
+          </button>
+          <!-- Input Field -->
+          <div class="flex-grow flex items-center relative">
+            <input class="w-full bg-surface-container-low text-on-surface font-body-md text-body-md rounded-xl py-space-sm px-space-md focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/70 transition-all" id="chatInput" placeholder="Ask Wander AI to adjust, add dietary notes, or suggest more spots..." type="text"/>
+          </div>
+          <!-- Voice Input / Mic -->
+          <button aria-label="Dictate message" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors shrink-0" type="button">
+            <span class="material-symbols-outlined text-[22px]">mic</span>
+          </button>
+          <!-- Send Burgundy Action Button -->
+          <button id="chatSendBtn" aria-label="Send prompt" class="h-10 px-space-md rounded-xl bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md flex items-center gap-space-xs shadow-sm hover:-translate-y-0.5 transition-all shrink-0" type="button">
+            <span class="hidden sm:inline">Ask AI</span>
+            <span class="material-symbols-outlined text-[18px]">send</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-lowest border-t border-surface-variant">
+    <div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg py-space-xl flex flex-col md:flex-row items-center justify-between gap-space-lg">
+      <div class="flex flex-wrap items-center justify-center md:justify-start gap-space-lg font-body-sm text-body-sm text-on-surface-variant">
+        <span class="text-on-surface">© 2025 Wander AI Inc. All rights reserved.</span>
+        <a class="hover:text-primary transition-colors" href="#">About</a>
+        <a class="hover:text-primary transition-colors" href="#">Curated Guides</a>
+        <a class="hover:text-primary transition-colors" href="#">Privacy</a>
+        <a class="hover:text-primary transition-colors" href="#">Support</a>
+      </div>
+      <div class="flex items-center gap-space-md font-label-md text-label-md text-on-surface-variant">
+        <div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded border border-surface-variant bg-surface">
+          <span class="material-symbols-outlined text-[16px]">payments</span>
+          <span>USD $</span>
+        </div>
+        <div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded border border-surface-variant bg-surface">
+          <span class="material-symbols-outlined text-[16px]">language</span>
+          <span>English</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== AUTH MODAL (LOGIN & SIGN UP) ==================== -->
+  <div id="modal-auth" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-3 border-b border-surface-variant">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-secondary-fixed text-primary flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-[20px]">lock</span>
+          </div>
+          <h3 id="auth-modal-title" class="font-headline-sm text-headline-sm text-primary font-bold">Welcome to Wander AI</h3>
+        </div>
+        <button onclick="closeAuthModal()" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="flex border-b border-surface-variant mt-4">
+        <button id="auth-tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 font-label-md text-label-md font-bold text-primary border-b-2 border-primary transition-colors">
+          Log In
+        </button>
+        <button id="auth-tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-2 font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Email Address</label>
+          <input id="login-email" type="email" placeholder="voyager@wander.ai" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div id="login-error-msg" class="text-xs text-error font-medium hidden"></div>
+        <button type="submit" id="btn-login-submit" class="w-full py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md transition-all">
+          Log In to Wander AI
+        </button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="form-signup" class="mt-4 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Your Full Name</label>
+          <input id="signup-name" type="text" placeholder="Elena Rostova" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Email Address</label>
+          <input id="signup-email" type="email" placeholder="elena@wander.ai" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Create Password</label>
+          <input id="signup-password" type="password" placeholder="Minimum 6 characters" minlength="6" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div id="signup-error-msg" class="text-xs text-error font-medium hidden"></div>
+        <button type="submit" id="btn-signup-submit" class="w-full py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md transition-all">
+          Create Wander Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Page Scripts -->
+  <script>
+    // Interactive Activity Card Selection Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.activity-card');
+      const selectedCountText = document.getElementById('selectedCountText');
+      const pacingText = document.getElementById('pacingText');
+      const categoryTabs = document.querySelectorAll('.category-btn');
+
+      function updateSummary() {
+        const selectedCards = document.querySelectorAll('.activity-card[data-selected="true"]');
+        const count = selectedCards.length;
+        selectedCountText.textContent = `${count} activities selected`;
+        
+        let totalDuration = 0;
+        selectedCards.forEach(c => {
+          totalDuration += parseFloat(c.getAttribute('data-duration') || '0');
+        });
+
+        const avgDaily = (totalDuration / 4).toFixed(1);
+        if (count === 0) {
+          pacingText.textContent = 'No activities selected yet';
+        } else if (avgDaily <= 4.5) {
+          pacingText.textContent = `Estimated time balanced (~${avgDaily} hrs/day • Relaxed)`;
+        } else {
+          pacingText.textContent = `Estimated time (~${avgDaily} hrs/day • Brisk Pace)`;
+        }
+      }
+
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          const isSelected = card.getAttribute('data-selected') === 'true';
+          const checkbox = card.querySelector('.activity-checkbox');
+          const checkIcon = checkbox.querySelector('.material-symbols-outlined');
+
+          if (isSelected) {
+            card.setAttribute('data-selected', 'false');
+            checkbox.classList.remove('bg-primary-container', 'text-on-primary');
+            checkbox.classList.add('bg-surface-container', 'text-on-surface-variant');
+            checkIcon.classList.add('opacity-0');
+          } else {
+            card.setAttribute('data-selected', 'true');
+            checkbox.classList.add('bg-primary-container', 'text-on-primary');
+            checkbox.classList.remove('bg-surface-container', 'text-on-surface-variant');
+            checkIcon.classList.remove('opacity-0');
+          }
+
+          updateSummary();
+        });
+      });
+
+      // Category Tabs Filtering
+      categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          categoryTabs.forEach(t => {
+            t.classList.remove('bg-primary-container', 'text-on-primary');
+            t.classList.add('bg-surface-container', 'text-on-surface-variant');
+          });
+          tab.classList.remove('bg-surface-container', 'text-on-surface-variant');
+          tab.classList.add('bg-primary-container', 'text-on-primary');
+
+          const cat = tab.getAttribute('data-cat');
+          cards.forEach(card => {
+            if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // Conversational Chat Send Trigger
+      const chatInput = document.getElementById('chatInput');
+      const chatSendBtn = document.getElementById('chatSendBtn');
+      const chatStreamBox = document.getElementById('chat-stream-box');
+
+      function sendUserChatMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // Append user bubble
+        const userBubble = document.createElement('div');
+        userBubble.className = "flex flex-col items-end gap-space-xs ml-space-lg";
+        userBubble.innerHTML = `
+          <div class="flex items-center gap-space-xs">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">You</span>
+            <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm flex items-center justify-center">U</div>
+          </div>
+          <div class="bg-primary text-on-primary p-space-md rounded-2xl rounded-tr-none shadow-sm font-body-md text-body-md leading-relaxed">
+            ${text}
+          </div>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Just now</span>
+        `;
+        chatStreamBox.appendChild(userBubble);
+        chatInput.value = '';
+        chatStreamBox.scrollTop = chatStreamBox.scrollHeight;
+
+        // Simulate AI Concierge response
+        setTimeout(() => {
+          const aiBubble = document.createElement('div');
+          aiBubble.className = "flex flex-col items-start gap-space-xs mr-space-lg";
+          aiBubble.innerHTML = `
+            <div class="flex items-center gap-space-xs">
+              <div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-xs">
+                <span class="material-symbols-outlined text-[14px]">compass_calibration</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-primary font-semibold">Wander AI</span>
+            </div>
+            <div class="bg-surface-container-lowest text-on-surface p-space-md rounded-2xl rounded-tl-none shadow-sm flex flex-col gap-space-sm font-body-md text-body-md leading-relaxed">
+              <p>Understood! I’ve updated your itinerary parameters. Your walking pace and restaurant selections will factor in: <em>"${text}"</em>.</p>
+            </div>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">Just now</span>
+          `;
+          chatStreamBox.appendChild(aiBubble);
+          chatStreamBox.scrollTop = chatStreamBox.scrollHeight;
+        }, 800);
+      }
+
+      chatSendBtn?.addEventListener('click', sendUserChatMessage);
+      chatInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendUserChatMessage();
+      });
+
+      // Restore user state if logged in
+      const stored = localStorage.getItem('wander_user');
+      if (stored) {
+        try { updateAuthUI(JSON.parse(stored)); } catch(e) {}
+      }
+
+      // Check if prompt was passed from landing page
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialPrompt = urlParams.get('prompt');
+      if (initialPrompt) {
+        const userPromptBubble = document.querySelector('#chat-stream-box .bg-primary');
+        if (userPromptBubble) {
+          userPromptBubble.textContent = initialPrompt;
+        }
+      }
+    });
+
+    function handleDinnerOption(btn) {
+      btn.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> Added`;
+      btn.classList.add('bg-secondary-fixed', 'text-primary');
+      btn.disabled = true;
+    }
+
+    function focusChat() {
+      const input = document.getElementById('chatInput');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function shareTrip() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Trip link copied to clipboard!");
+      }
+    }
+
+    // Auth Modal Handlers
+    function openAuthModal(tab = 'login') {
+      const modal = document.getElementById('modal-auth');
+      if (modal) modal.classList.remove('modal-hidden');
+      switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('modal-auth');
+      if (modal) modal.classList.add('modal-hidden');
+    }
+
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('form-login');
+      const signupForm = document.getElementById('form-signup');
+      const tabLogin = document.getElementById('auth-tab-login');
+      const tabSignup = document.getElementById('auth-tab-signup');
+      const title = document.getElementById('auth-modal-title');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        tabLogin.className = "flex-1 py-2 font-label-md text-label-md font-bold text-primary border-b-2 border-primary transition-colors";
+        tabSignup.className = "flex-1 py-2 font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors";
+        if (title) title.textContent = "Welcome Back to Wander AI";
+      } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        tabSignup.className = "flex-1 py-2 font-label-md text-label-md font-bold text-primary border-b-2 border-primary transition-colors";
+        tabLogin.className = "flex-1 py-2 font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors";
+        if (title) title.textContent = "Create Wander Account";
+      }
+    }
+
+    function updateAuthUI(user) {
+      const slot = document.getElementById('auth-header-slot');
+      const avatarBadge = document.getElementById('user-avatar-badge');
+      if (user && user.email) {
+        const name = user.name || user.email.split('@')[0];
+        if (slot) {
+          slot.innerHTML = `<span class="font-label-md text-label-md text-primary font-bold hidden sm:inline">${name}</span>`;
+        }
+        if (avatarBadge) {
+          avatarBadge.innerHTML = `<span class="text-xs font-bold">${name.substring(0, 2).toUpperCase()}</span>`;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

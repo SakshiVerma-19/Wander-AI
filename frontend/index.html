@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_standard" name="shell-type"/>
+  <title>Wander AI — Rome: Historic Wonders & Bohemian Nights</title>
+  <meta name="description" content="Curated 4-day journey through Rome with Wander AI. Explore the Imperial Core, Trastevere, Vatican art, and sunset aperitivos."/>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed": "#ffd9de",
+            "on-secondary-fixed-variant": "#871b3c",
+            "primary": "#58001b",
+            "error": "#ba1a1a",
+            "surface-variant": "#e9e1dd",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#cec4c6",
+            "surface-tint": "#a5374c",
+            "on-primary-container": "#ff8496",
+            "tertiary-fixed": "#eae0e2",
+            "error-container": "#ffdad6",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#400011",
+            "outline": "#897173",
+            "surface-container": "#f4ece8",
+            "surface-container-highest": "#e9e1dd",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#1e1b19",
+            "on-secondary-fixed": "#3f0015",
+            "secondary-fixed-dim": "#ffb2bf",
+            "tertiary": "#2d2729",
+            "secondary-container": "#fe7796",
+            "outline-variant": "#ddc0c2",
+            "on-error-container": "#93000a",
+            "inverse-on-surface": "#f7efeb",
+            "inverse-primary": "#ffb2ba",
+            "on-tertiary-fixed": "#1f1a1c",
+            "surface-dim": "#e0d8d5",
+            "background": "#fff8f5",
+            "on-error": "#ffffff",
+            "secondary": "#a73453",
+            "on-surface-variant": "#564143",
+            "surface-container-low": "#faf2ee",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#851e36",
+            "on-tertiary-fixed-variant": "#4b4547",
+            "inverse-surface": "#33302d",
+            "on-background": "#1e1b19",
+            "primary-container": "#7a152e",
+            "primary-fixed-dim": "#ffb2ba",
+            "surface-bright": "#fff8f5",
+            "on-tertiary-container": "#b1a8aa",
+            "tertiary-container": "#433d3f",
+            "on-secondary-container": "#74092f",
+            "primary-fixed": "#ffd9dc",
+            "surface-container-high": "#eee7e3",
+            "surface": "#fff8f5"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "margin-lg": "4rem",
+            "space-sm": "0.5rem",
+            "gutter-sm": "1rem",
+            "gutter-lg": "2rem",
+            "margin": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "margin-sm": "1rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem"
+          },
+          fontFamily: {
+            "body-xl": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Playfair Display"],
+            "display-lg": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "headline-sm": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"]
+          },
+          fontSize: {
+            "body-xl": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom App Styles -->
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-surface-variant">
+    <div class="h-20 max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg flex items-center justify-between gap-space-md">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-space-md shrink-0 hover:opacity-90 transition-opacity">
+        <img alt="Wander AI Burgundy Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WBVbq3V5J3GbM8ZsW5XSy9hRVOlF7VFWSGNMlqDDqxKFokyrnuXC8apLGXw7ybPgvwKJbJxSUqAELSxIURCpSO1xAcnF_5YoqN7DGMT_gFKSlcWmcuJV-p2QUm4NqbSWyPnT67S-X44_w1AWft_1PhsNH4yPzWdMqj3uoxFkgblAD9EBQegrtZOpZARQsObFXAv8ZHIAtmsajt_e3ZYyIXgwYCvcFBamL3DfrDNjkrjX9HSHKVQXJx5w"/>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">Wander AI</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase mt-space-xs">Smart Travel Curator</span>
+        </div>
+      </a>
+
+      <!-- Primary Nav -->
+      <nav class="hidden lg:flex items-center gap-space-xl" data-active-classes="text-primary font-label-lg font-bold border-b-2 border-primary">
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/">Discover</a>
+        <a aria-current="page" class="transition-colors py-space-xs text-primary font-label-lg font-bold border-b-2 border-primary" href="/itinerary" data-action="plan-trip">Plan Trip</a>
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/#destinations">Destinations</a>
+        <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="/itinerary">My Trips</a>
+      </nav>
+
+      <!-- Action Nav -->
+      <div class="flex items-center gap-space-md shrink-0">
+        <button aria-label="Search" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button" onclick="openModal('modal-search')">
+          <span class="material-symbols-outlined text-[22px]">search</span>
+        </button>
+        <div id="auth-header-slot-itin">
+          <button class="hidden sm:inline-flex font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors px-space-sm py-space-xs" type="button" onclick="openModal('modal-auth')">Log In</button>
+        </div>
+        <button class="inline-flex items-center justify-center bg-primary-container text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded-lg hover:bg-primary transition-all shadow-[0_2px_8px_rgba(88,0,27,0.12)] hover:-translate-y-0.5" data-action="plan-trip" type="button">
+          Start Planning
+        </button>
+        <div id="user-avatar-badge-itin" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 text-white cursor-pointer hover:opacity-90" onclick="openModal('modal-auth')">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View -->
+  <main class="w-full pt-20 bg-surface min-h-[calc(100vh-160px)]">
+    <div class="flex flex-col w-full">
+
+      <!-- Sub-Header / Trip Meta Section -->
+      <section class="w-full bg-surface-container-lowest shadow-sm">
+        <div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg py-space-lg flex flex-col xl:flex-row xl:items-end justify-between gap-space-lg">
+          <div class="space-y-space-xs">
+            <div class="flex flex-wrap items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+              <span class="inline-flex items-center gap-1 text-primary font-bold">
+                <span class="material-symbols-outlined text-[16px]">explore</span>
+                Curated Journey
+              </span>
+              <span>•</span>
+              <span id="trip-collection-label">Italy Collection</span>
+              <span>•</span>
+              <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-semibold text-[11px] uppercase tracking-wider">AI Concierge Verified</span>
+            </div>
+            
+            <h1 id="trip-title-heading" class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">
+              Rome: Historic Wonders &amp; Bohemian Nights
+            </h1>
+
+            <div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface">
+                <span class="material-symbols-outlined text-[15px] text-primary">calendar_month</span>
+                <span id="meta-chip-dates">Oct 12 – 16, 2025</span>
+              </div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface">
+                <span class="material-symbols-outlined text-[15px] text-primary">schedule</span>
+                <span id="meta-chip-duration">4 Days</span>
+              </div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface">
+                <span class="material-symbols-outlined text-[15px] text-primary">group</span>
+                <span id="meta-chip-travelers">2 Travelers</span>
+              </div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 font-label-sm text-label-sm text-on-secondary-fixed-variant">
+                <span class="material-symbols-outlined text-[15px] text-secondary">verified</span>
+                <span id="meta-chip-activities">5 Selected Activities</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Suite -->
+          <div class="action-buttons flex flex-wrap items-center gap-space-sm shrink-0">
+            <button id="btn-share-trip" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+              <span class="material-symbols-outlined text-[18px]">share</span>
+              Share Trip
+            </button>
+            <button id="btn-download-pdf" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+              <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+              Download PDF
+            </button>
+            <button id="btn-export-ical" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-all shadow-sm" type="button">
+              <span class="material-symbols-outlined text-[18px]">event_available</span>
+              Export to Apple Calendar
+            </button>
+            <button id="btn-edit-pref" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-all shadow-md" type="button">
+              <span class="material-symbols-outlined text-[18px]">tune</span>
+              Edit Preferences
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Dual Workspace (Schedule & Cartography) -->
+      <div class="w-full max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg py-space-lg flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+
+          <!-- Left Panel: Itinerary Timeline (7 cols ~58%) -->
+          <section class="lg:col-span-7 flex flex-col gap-space-lg">
+
+            <!-- Day Switcher Pills -->
+            <div class="day-switcher-bar flex items-center gap-space-sm overflow-x-auto pb-2 scrollbar-none">
+              <button data-day="1" data-label="Day 1 (Rome Highlights)" class="day-tab px-5 py-2.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md shadow-sm shrink-0 flex items-center gap-2 transition-transform hover:-translate-y-0.5" type="button">
+                <span class="w-2 h-2 rounded-full bg-secondary-fixed"></span>
+                Day 1 (Rome Highlights)
+              </button>
+              <button data-day="2" data-label="Day 2 (Trastevere &amp; Monti)" class="day-tab px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm shrink-0 transition-transform hover:-translate-y-0.5" type="button">
+                Day 2 (Trastevere &amp; Monti)
+              </button>
+              <button data-day="3" data-label="Day 3 (Vatican &amp; Art)" class="day-tab px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm shrink-0 transition-transform hover:-translate-y-0.5" type="button">
+                Day 3 (Vatican &amp; Art)
+              </button>
+              <button data-day="4" data-label="Day 4 (Leisure &amp; Departure)" class="day-tab px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm shrink-0 transition-transform hover:-translate-y-0.5" type="button">
+                Day 4 (Leisure &amp; Departure)
+              </button>
+              <button data-day="all" data-label="Full Overview" class="day-tab px-4 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant hover:text-primary font-label-md text-label-md shrink-0 flex items-center gap-1 transition-transform hover:-translate-y-0.5" type="button">
+                <span class="material-symbols-outlined text-[16px]">overview</span>
+                Full Overview
+              </button>
+            </div>
+
+            <!-- Day Header & Quick Route Stats -->
+            <div id="day-header-section" class="flex items-center justify-between bg-surface-container-low p-space-md rounded-xl">
+              <!-- Dynamically populated by renderTimeline() -->
+            </div>
+
+            <!-- Timeline Stream -->
+            <div id="timeline-stream" class="timeline-stream relative pl-6 space-y-space-lg">
+              <!-- Dynamically populated by renderTimeline() -->
+            </div>
+
+            <!-- Add Custom Experience Prompt Box -->
+            <div class="prompt-box mt-space-sm p-space-md rounded-xl bg-surface-container-low flex items-center justify-between gap-space-md">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed text-primary flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+                </div>
+                <div>
+                  <p class="font-label-md text-label-md text-on-surface font-semibold">Wish to adapt daily rhythm?</p>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Ask Wander AI to swap museum stops, fit boutique shopping, or adjust pace.</p>
+                </div>
+              </div>
+              <button id="btn-regenerate-day" class="px-4 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface text-primary font-label-md text-label-md font-bold shadow-sm transition-all shrink-0" type="button">
+                Regenerate Day
+              </button>
+            </div>
+          </section>
+
+          <!-- Right Panel: Interactive Light Map Canvas (5 cols ~42%) -->
+          <section id="map-container" class="lg:col-span-5 sticky top-24 flex flex-col gap-space-md">
+            
+            <!-- Map Container -->
+            <div id="map-canvas-container" class="relative w-full h-[640px] rounded-2xl overflow-hidden shadow-lg bg-surface-container-high border border-surface-variant">
+              <!-- Live Leaflet Map Element -->
+              <div id="leaflet-map"></div>
+
+              <!-- Floating Route Summary Card -->
+              <div class="absolute top-4 inset-x-4 p-space-sm bg-surface-container-lowest/95 backdrop-blur-md rounded-xl shadow-md z-[400]">
+                <div class="flex items-center justify-between gap-space-sm">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-secondary-fixed text-primary flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-[18px]">footprint</span>
+                    </div>
+                    <div>
+                      <p id="route-metrics-title" class="font-label-sm text-label-sm text-primary font-bold">Total Day 1 Walking</p>
+                      <p id="route-metrics-distance" class="font-body-sm text-body-sm text-on-surface">3.8 km • 48 min total transit</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                    Optimal Walking Path
+                  </span>
+                </div>
+              </div>
+
+              <!-- Interactive Map Controls (Top Right Overlay) -->
+              <div class="map-controls absolute right-4 top-24 flex flex-col gap-1.5 shadow-md z-[400]">
+                <button id="map-ctrl-layer" class="w-9 h-9 bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded-lg flex items-center justify-center transition-colors shadow-sm" title="Toggle Map Style" type="button">
+                  <span class="material-symbols-outlined text-[20px]">layers</span>
+                </button>
+                <button id="map-ctrl-zoom-in" class="w-9 h-9 bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded-lg flex items-center justify-center transition-colors shadow-sm" title="Zoom In" type="button">
+                  <span class="material-symbols-outlined text-[20px]">add</span>
+                </button>
+                <button id="map-ctrl-zoom-out" class="w-9 h-9 bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded-lg flex items-center justify-center transition-colors shadow-sm" title="Zoom Out" type="button">
+                  <span class="material-symbols-outlined text-[20px]">remove</span>
+                </button>
+                <button id="map-ctrl-fullscreen" class="w-9 h-9 bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded-lg flex items-center justify-center transition-colors shadow-sm" title="Fullscreen" type="button">
+                  <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+                </button>
+                <button id="map-ctrl-recenter" class="w-9 h-9 bg-surface-container-lowest hover:bg-surface-container text-primary rounded-lg flex items-center justify-center transition-colors shadow-sm" title="Recenter Stops" type="button">
+                  <span class="material-symbols-outlined text-[20px]">center_focus_strong</span>
+                </button>
+              </div>
+
+              <!-- Interactive Pin Legend / Quick Switch Overlay -->
+              <div class="absolute bottom-4 inset-x-4 p-space-sm bg-surface-container-lowest/95 backdrop-blur-md rounded-xl shadow-md flex items-center justify-between gap-2 z-[400]">
+                <div class="flex items-center gap-space-sm">
+                  <div class="flex -space-x-2">
+                    <span class="w-7 h-7 rounded-full bg-primary text-on-primary text-[12px] font-bold flex items-center justify-center ring-2 ring-white">1</span>
+                    <span class="w-7 h-7 rounded-full bg-primary text-on-primary text-[12px] font-bold flex items-center justify-center ring-2 ring-white">2</span>
+                    <span class="w-7 h-7 rounded-full bg-primary text-on-primary text-[12px] font-bold flex items-center justify-center ring-2 ring-white">3</span>
+                  </div>
+                  <div class="text-label-sm font-label-sm">
+                    <span id="legend-pinned-count" class="text-on-surface font-semibold">3 Highlights pinned</span>
+                    <span class="text-on-surface-variant block text-[11px]">Click pin to center card</span>
+                  </div>
+                </div>
+                <button onclick="updateMapForActiveDay()" class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm font-bold transition-colors" type="button">
+                  Recenter View
+                </button>
+              </div>
+            </div>
+
+            <!-- Reservation & Tickets Status Widget -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-center justify-between gap-space-md border border-surface-variant">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed text-primary flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">confirmation_number</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline-sm text-[16px] text-on-surface font-bold">2 of 3 tickets reserved</span>
+                    <span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+                  </div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Colosseum entry &amp; Da Enzo booked. Giolitti is walk-in.</p>
+                </div>
+              </div>
+              <button id="btn-view-passes" class="px-4 py-2 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md font-semibold transition-all shrink-0 shadow-sm" type="button">
+                View Passes
+              </button>
+            </div>
+
+            <!-- Curated Local Weather & Attire Advice -->
+            <div id="weather-insight-card" class="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between text-on-surface border border-surface-variant">
+              <div class="flex items-center gap-space-sm">
+                <span class="material-symbols-outlined text-[26px] text-secondary">wb_sunny</span>
+                <div>
+                  <p class="font-label-sm text-label-sm font-bold text-primary uppercase tracking-wider">Local Insight</p>
+                  <p class="weather-advice-text font-body-sm text-body-sm text-on-surface-variant">Optimal lighting at Piazza Navona begins at 17:45. Bring comfortable leather walking shoes for historic cobblestones.</p>
+                </div>
+              </div>
+            </div>
+
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-lowest border-t border-surface-variant">
+    <div class="max-w-[1440px] mx-auto px-margin-sm md:px-margin lg:px-margin-lg py-space-xl flex flex-col md:flex-row items-center justify-between gap-space-lg">
+      <div class="flex flex-wrap items-center justify-center md:justify-start gap-space-lg font-body-sm text-body-sm text-on-surface-variant">
+        <span class="text-on-surface font-medium">© 2025 Wander AI Inc. All rights reserved.</span>
+        <a class="hover:text-primary transition-colors" href="#">About</a>
+        <a class="hover:text-primary transition-colors" href="#">Curated Guides</a>
+        <a class="hover:text-primary transition-colors" href="#">Privacy</a>
+        <a class="hover:text-primary transition-colors" href="#">Support</a>
+      </div>
+      <div class="flex items-center gap-space-md font-label-md text-label-md text-on-surface-variant">
+        <div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded border border-surface-variant bg-surface cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">payments</span>
+          <span>USD $</span>
+        </div>
+        <div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded border border-surface-variant bg-surface cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">language</span>
+          <span>English</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Plan Trip (New AI Generation) -->
+  <div id="modal-plan-trip" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-4 border-b border-surface-variant">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-secondary-fixed text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">explore</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-primary font-bold">Plan a New Curated Trip</h3>
+        </div>
+        <button onclick="closeModal('modal-plan-trip')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <form id="form-plan-trip" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Destination</label>
+          <input id="plan-destination" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Rome, Italy or Kyoto, Japan" value="Rome, Italy" required/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Duration (Days)</label>
+            <input id="plan-duration" type="number" min="1" max="14" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" value="4"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Travel Pace</label>
+            <select id="plan-pace" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="relaxed">Relaxed</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="fast">Action-Packed</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Interests</label>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container cursor-pointer hover:bg-secondary-fixed">
+              <input type="checkbox" checked class="accent-primary"/> History &amp; Ruins
+            </label>
+            <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container cursor-pointer hover:bg-secondary-fixed">
+              <input type="checkbox" checked class="accent-primary"/> Food &amp; Wine
+            </label>
+            <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container cursor-pointer hover:bg-secondary-fixed">
+              <input type="checkbox" checked class="accent-primary"/> Art Museums
+            </label>
+            <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container cursor-pointer hover:bg-secondary-fixed">
+              <input type="checkbox" class="accent-primary"/> Boutique Ateliers
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-3 border-t border-surface-variant">
+          <button type="button" onclick="closeModal('modal-plan-trip')" class="px-4 py-2 rounded-lg text-stone-600 hover:bg-stone-100 font-semibold text-sm">Cancel</button>
+          <button id="btn-submit-plan" type="submit" class="px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">auto_awesome</span> Generate Itinerary
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Stop -->
+  <div id="modal-add-stop" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-4 border-b border-surface-variant">
+        <h3 class="font-headline-sm text-headline-sm text-primary font-bold">Add Stop to Itinerary</h3>
+        <button onclick="closeModal('modal-add-stop')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <form id="form-add-stop" class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Stop Name / Activity</label>
+          <input id="add-stop-title" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Trevi Fountain Coin Toss" required/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Category</label>
+            <select id="add-stop-category" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary">
+              <option value="Historic">Historic</option>
+              <option value="Culinary Gem">Culinary Gem</option>
+              <option value="Art & Culture">Art & Culture</option>
+              <option value="Architecture">Architecture</option>
+              <option value="Golden Hour">Golden Hour</option>
+              <option value="Nightlife">Nightlife</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Estimated Time</label>
+            <input id="add-stop-time" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 04:30 PM" value="04:30 PM"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Duration</label>
+            <input id="add-stop-duration" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 1.5 hrs" value="1.5 hrs"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Address / Landmark</label>
+            <input id="add-stop-address" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Piazza di Trevi"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Notes / Description</label>
+          <textarea id="add-stop-desc" rows="2" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Key highlights, booking codes, or tips..."></textarea>
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-3 border-t border-surface-variant">
+          <button type="button" onclick="closeModal('modal-add-stop')" class="px-4 py-2 rounded-lg text-stone-600 hover:bg-stone-100 font-semibold text-sm">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md">Add to Timeline</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Regenerate / Adapt Day -->
+  <div id="modal-regenerate" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-3 border-b border-surface-variant">
+        <div class="flex items-center gap-2 text-primary font-bold">
+          <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+          <h3 class="font-headline-sm text-headline-sm">Adapt Daily Rhythm</h3>
+        </div>
+        <button onclick="closeModal('modal-regenerate')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <p class="text-xs text-on-surface-variant">Instruct Wander AI to restructure the timing, add culinary experiences, or replace museum stops.</p>
+        <textarea id="regen-prompt-input" rows="3" class="w-full p-3 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Focus heavily on natural wines, add vintage shopping in Monti, and start the day at 11 AM..."></textarea>
+      </div>
+
+      <div class="pt-4 flex items-center justify-end gap-3 border-t border-surface-variant mt-4">
+        <button type="button" onclick="closeModal('modal-regenerate')" class="px-4 py-2 rounded-lg text-stone-600 hover:bg-stone-100 font-semibold text-sm">Cancel</button>
+        <button id="btn-confirm-regen" type="button" class="px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">auto_awesome</span> Re-Optimize Day
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: View Passes & Tickets -->
+  <div id="modal-passes" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-3 border-b border-surface-variant">
+        <div class="flex items-center gap-2 text-primary font-bold">
+          <span class="material-symbols-outlined text-[22px]">confirmation_number</span>
+          <h3 class="font-headline-sm text-headline-sm">Curated Travel Passes</h3>
+        </div>
+        <button onclick="closeModal('modal-passes')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+        <!-- Pass 1 -->
+        <div class="p-3 rounded-xl bg-surface-container border border-surface-variant flex items-center justify-between">
+          <div>
+            <span class="px-2 py-0.5 rounded bg-secondary-fixed text-primary font-bold text-[10px] uppercase">Skip-the-line</span>
+            <h4 class="font-bold text-sm text-primary mt-1">Colosseum &amp; Roman Forum</h4>
+            <p class="text-xs text-on-surface-variant">Oct 12, 2025 • 09:00 AM • 2 Adults</p>
+            <p class="text-[11px] text-stone-500 mt-1">Ref: #ROM-COL-89217</p>
+          </div>
+          <div class="w-14 h-14 bg-white p-1 rounded border border-stone-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[36px] text-stone-800">qr_code_2</span>
+          </div>
+        </div>
+
+        <!-- Pass 2 -->
+        <div class="p-3 rounded-xl bg-surface-container border border-surface-variant flex items-center justify-between">
+          <div>
+            <span class="px-2 py-0.5 rounded bg-secondary-fixed text-primary font-bold text-[10px] uppercase">Table Reserved</span>
+            <h4 class="font-bold text-sm text-primary mt-1">Da Enzo al 29</h4>
+            <p class="text-xs text-on-surface-variant">Oct 12, 2025 • 08:30 PM • 2 Guests</p>
+            <p class="text-[11px] text-stone-500 mt-1">Ref: #TRST-ENZO-441</p>
+          </div>
+          <div class="w-14 h-14 bg-white p-1 rounded border border-stone-200 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[36px] text-stone-800">qr_code_2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 flex items-center justify-between border-t border-surface-variant mt-4">
+        <span class="text-xs text-stone-500 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-green-600">verified</span> Apple Wallet Synced
+        </span>
+        <button onclick="closeModal('modal-passes')" class="px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-bold text-xs">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Preferences -->
+  <div id="modal-edit-pref" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-3 border-b border-surface-variant">
+        <div class="flex items-center gap-2 text-primary font-bold">
+          <span class="material-symbols-outlined text-[20px]">tune</span>
+          <h3 class="font-headline-sm text-headline-sm">Edit Trip Preferences</h3>
+        </div>
+        <button onclick="closeModal('modal-edit-pref')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Trip Name</label>
+          <input id="pref-trip-name" type="text" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md" value="Rome: Historic Wonders & Bohemian Nights"/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Travelers</label>
+            <input id="pref-travelers" type="number" min="1" max="10" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md" value="2"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Pace</label>
+            <select id="pref-pace" class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md">
+              <option value="Relaxed">Relaxed</option>
+              <option value="Moderate" selected>Moderate</option>
+              <option value="Fast">Fast-paced</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 flex items-center justify-end gap-3 border-t border-surface-variant mt-4">
+        <button type="button" onclick="closeModal('modal-edit-pref')" class="px-4 py-2 rounded-lg text-stone-600 hover:bg-stone-100 font-semibold text-sm">Cancel</button>
+        <button onclick="
+          const newName = document.getElementById('pref-trip-name').value;
+          const newTravelers = document.getElementById('pref-travelers').value;
+          document.getElementById('trip-title-heading').textContent = newName;
+          document.getElementById('meta-chip-travelers').textContent = newTravelers + ' Travelers';
+          closeModal('modal-edit-pref');
+          showToast('Trip preferences saved!', 'check_circle');
+        " class="px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md">
+          Save Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Quick Search -->
+  <div id="modal-search" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-surface-variant">
+      <div class="flex items-center gap-2 pb-3 border-b border-surface-variant">
+        <span class="material-symbols-outlined text-primary text-[24px]">search</span>
+        <input id="quick-search-input" type="text" placeholder="Search POIs, restaurants, or day plans..." class="w-full text-base focus:outline-none bg-transparent text-on-surface"/>
+        <button onclick="closeModal('modal-search')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <div class="mt-4 space-y-2 text-xs text-stone-500">
+        <p class="font-bold text-stone-700 uppercase tracking-wider text-[10px]">Popular Suggestions</p>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="closeModal('modal-search'); highlightTimelineCard('stop-1-1')" class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-secondary-fixed">Colosseum</button>
+          <button onclick="closeModal('modal-search'); highlightTimelineCard('stop-1-3')" class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-secondary-fixed">Pantheon &amp; Navona</button>
+          <button onclick="closeModal('modal-search'); highlightTimelineCard('stop-1-5')" class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-secondary-fixed">Trastevere Wine</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTH MODAL (LOGIN & SIGN UP) ==================== -->
+  <div id="modal-auth" class="modal-overlay modal-hidden fixed inset-0 z-[1000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-container bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full p-6 border border-surface-variant">
+      <div class="flex items-center justify-between pb-3 border-b border-surface-variant">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-secondary-fixed text-primary flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-[20px]">lock</span>
+          </div>
+          <h3 id="auth-modal-title" class="font-headline-sm text-headline-sm text-primary font-bold">Welcome to Wander AI</h3>
+        </div>
+        <button onclick="closeModal('modal-auth')" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="flex border-b border-surface-variant mt-4">
+        <button id="auth-tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 font-label-md text-label-md font-bold text-primary border-b-2 border-primary transition-colors">
+          Log In
+        </button>
+        <button id="auth-tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-2 font-label-md text-label-md font-medium text-on-surface-variant hover:text-primary transition-colors">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Email Address</label>
+          <input id="login-email" type="email" placeholder="voyager@wander.ai" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div id="login-error-msg" class="text-xs text-error font-medium hidden"></div>
+        <button type="submit" id="btn-login-submit" class="w-full py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md transition-all">
+          Log In to Wander AI
+        </button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="form-signup" class="mt-4 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Your Full Name</label>
+          <input id="signup-name" type="text" placeholder="Claire Laurent" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Email Address</label>
+          <input id="signup-email" type="email" placeholder="claire@wander.ai" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">Create Password</label>
+          <input id="signup-password" type="password" placeholder="Minimum 6 characters" minlength="6" required class="w-full px-3 py-2 rounded-lg border border-surface-variant bg-surface text-on-surface font-body-md focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div id="signup-error-msg" class="text-xs text-error font-medium hidden"></div>
+        <button type="submit" id="btn-signup-submit" class="w-full py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-bold text-sm shadow-md transition-all">
+          Create Wander Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Wander AI Application Engine -->
+  <script src="app.js"></script>
+</body>
+</html>

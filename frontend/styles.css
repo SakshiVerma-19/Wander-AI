@@ -1,0 +1,195 @@
+/* Custom Styles for Wander AI Luxury Frontend */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4ece8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddc0c2;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #897173;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Timeline card subtle animations */
+.timeline-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-2px);
+}
+
+.timeline-card.highlighted {
+  border: 2px solid #58001b !important;
+  box-shadow: 0 8px 24px rgba(88, 0, 27, 0.18) !important;
+}
+
+/* Leaflet Map Customizations */
+#leaflet-map {
+  width: 100%;
+  height: 100%;
+  background: #f4ece8;
+  z-index: 1;
+}
+
+.leaflet-container {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Custom Numbered Marker Pin */
+.custom-map-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #58001b;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(88, 0, 27, 0.45);
+  border: 3px solid #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.custom-map-marker:hover,
+.custom-map-marker.active {
+  transform: scale(1.22);
+  background: #7a152e;
+  box-shadow: 0 0 0 6px rgba(167, 52, 83, 0.25), 0 8px 20px rgba(88, 0, 27, 0.5);
+  z-index: 1000 !important;
+}
+
+.custom-map-marker.secondary-stop {
+  width: 28px;
+  height: 28px;
+  background: #a73453;
+  font-size: 11px;
+}
+
+/* Custom Leaflet Popup */
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 10px 25px -5px rgba(88, 0, 27, 0.15), 0 8px 10px -6px rgba(88, 0, 27, 0.1);
+  border: 1px solid #e9e1dd;
+  overflow: hidden;
+}
+
+.custom-leaflet-popup .leaflet-popup-content {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.custom-leaflet-popup .leaflet-popup-tip {
+  background: #ffffff;
+  box-shadow: none;
+}
+
+/* Modal Animations */
+.modal-overlay {
+  transition: opacity 0.25s ease-out;
+}
+
+.modal-container {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out;
+}
+
+.modal-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-hidden .modal-container {
+  transform: scale(0.96) translateY(8px);
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: #ffffff;
+  color: #1e1b19;
+  border-left: 4px solid #58001b;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Print Stylesheet for Download PDF */
+@media print {
+  header, footer, .action-buttons, .day-switcher-bar, #map-container, .prompt-box, .map-controls {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  main {
+    padding-top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .timeline-stream {
+    page-break-inside: auto;
+  }
+
+  article {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 1rem !important;
+  }
+}

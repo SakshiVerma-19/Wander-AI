@@ -4,3 +4,5 @@ pydeck
 requests
 scikit-learn
 pandas
+fastapi
+uvicorn
